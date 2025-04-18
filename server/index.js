@@ -5,8 +5,9 @@ const pg = require("pg");
 const client = new pg.Client("postgres://localhost/acme_hr_directory");
 const cors = require("cors");
 
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
+app.use(require("morgan")("dev"));
 app.listen(PORT, () => {
   console.log(`I am listening on port number ${PORT}`);
 });
@@ -15,16 +16,22 @@ app.get("/", (req, res, next) => {
 });
 app.get("/api/employees", async (req, res, next) => {
   try {
-    res.status(200).send("Returns array of employees.");
+    const SQL = `
+        SELECT * from employees
+    `;
+    const response = await client.query(SQL);
+    res.status(200).json(response.rows);
   } catch (error) {
     next(error);
   }
 });
 app.get("/api/departments", async (req, res, next) => {
   try {
-    res.status(200).send("Returns an array of departments.");
+    const SQL = `SELECT * FROM departments`;
+    const response = await client.query(SQL);
+    res.status(200).json(response.rows); // Ensure this sends JSON
   } catch (error) {
-    next(error);
+    next(error); // Handle errors
   }
 });
 app.post("/api/employees", async (req, res, next) => {
@@ -60,3 +67,7 @@ app.put("/api/employees/:id", async (req, res, next) => {
     next(error);
   }
 });
+const init = async () => {
+  await client.connect();
+};
+init();
