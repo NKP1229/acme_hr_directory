@@ -25,6 +25,18 @@ app.get("/api/employees", async (req, res, next) => {
     next(error);
   }
 });
+app.get("/api/employees/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const SQL = `
+            SELECT * from employees WHERE id = $1 
+        `;
+    const response = await client.query(SQL, [id]);
+    res.status(200).json(response.rows);
+  } catch (error) {
+    next(error);
+  }
+});
 app.get("/api/departments", async (req, res, next) => {
   try {
     const SQL = `SELECT * FROM departments`;
