@@ -6,6 +6,9 @@ const App = () => {
   const [employees, setEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [department, setDepartment] = useState("");
+
   useEffect(() => {
     const fetchDepartments = async () => {
       const response = await axios.get("/api/employees");
@@ -14,7 +17,6 @@ const App = () => {
     };
     fetchDepartments();
   }, []);
-
   async function getDetails(id) {
     try {
       const response = await axios.get(`/api/employees/${id}`);
@@ -23,31 +25,83 @@ const App = () => {
       console.error(error);
     }
   }
+  async function updateEmployee(event) {
+    event.preventDefault();
+    try {
+      const id = selectedEmployee.id;
+      // const response = await axios.put(`/api/employees/${id}`, {
+      //   department_id: department,
+      // });
+      console.log(department);
+      setIsUpdating(false);
+      getDetails(id);
+    } catch (error) {
+      console.error(error);
+      setIsUpdating(false);
+    }
+  }
   if (isLoading) {
     return <section className="loading">Loading</section>;
   }
-  if (selectedEmployee) {
+  if (isUpdating) {
     return (
-      <main>
-        <h1>
-          <b>Selected Employee:</b>
-        </h1>
-        <h2>{selectedEmployee.name}</h2>
-        <h3>employeeID: </h3>
-        <h4>{selectedEmployee.id}</h4>
-        <h3>Department: </h3>
-        <h4>{selectedEmployee.department_id}</h4>
-        <h3>Date Joined: </h3>
-        <h3>Last Update: </h3>
+      <>
+        <button onClick={() => setIsUpdating(false)}>back</button>
+        <main>
+          <h1>
+            <b>Updating {selectedEmployee.name}:</b>
+          </h1>
+          <form onSubmit={updateEmployee}>
+            <div className="formDiv">
+              <label>Department:</label>
+              <select
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+              >
+                <option value="Accounting">Accounting</option>
+                <option value="Customer Service">Customer Service</option>
+                <option value="Finance">Finance</option>
+                <option value="Info Tech">Info Tech</option>
+                <option value="Marketing">Marketing</option>
+              </select>
+            </div>
+            <button type="submit">Submit</button>
+          </form>
+        </main>
+      </>
+    );
+  } else if (selectedEmployee) {
+    return (
+      <>
         <button
-          className="details"
           onClick={() => {
             setSelectedEmployee(null);
           }}
         >
           back
         </button>
-      </main>
+        <main>
+          <h1>
+            <b>Selected Employee:</b>
+          </h1>
+          <h2>{selectedEmployee.name}</h2>
+          <h3>employeeID: </h3>
+          <h4>{selectedEmployee.id}</h4>
+          <h3>Department: </h3>
+          <h4>{selectedEmployee.department_id}</h4>
+          <h3>Date Joined: </h3>
+          <h4>{selectedEmployee.created_at}</h4>
+          <h3>Last Update: </h3>
+          <h4>{selectedEmployee.updated_at}</h4>
+          <button
+            onClick={() => {
+              setIsUpdating(true);
+            }}
+          >
+            update
+          </button>
+        </main>
+      </>
     );
   }
   return (
