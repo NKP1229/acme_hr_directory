@@ -60,11 +60,12 @@ app.post("/api/employees", async (req, res, next) => {
 });
 app.delete("/api/employees/:id", async (req, res, next) => {
   try {
-    res
-      .status(200)
-      .send(
-        "Returns nothing. The ID of the employee to delete is passed in the URL."
-      );
+    const { id } = req.params;
+    const SQL = `
+        DELETE FROM employees WHERE id = $1
+    `;
+    await client.query(SQL, [id]);
+    res.sendStatus(204);
   } catch (error) {
     next(error);
   }

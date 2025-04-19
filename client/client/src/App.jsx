@@ -19,11 +19,19 @@ const App = () => {
       setIsLoading(false);
     };
     fetchEmployees();
-  }, [isAdding]);
+  }, [isAdding, selectedEmployee]);
   async function getDetails(id) {
     try {
       const response = await axios.get(`/api/employees/${id}`);
       setSelectedEmployee(response.data[0]);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async function deleteEmployee(id) {
+    try {
+      const response = await axios.delete(`/api/employees/${id}`);
+      setSelectedEmployee(null);
     } catch (error) {
       console.error(error);
     }
@@ -120,7 +128,12 @@ const App = () => {
           <h1>
             <b>Selected Employee:</b>
           </h1>
-          <h2>{selectedEmployee.name}</h2>
+          <h2>
+            {selectedEmployee.name}
+            <button onClick={() => deleteEmployee(selectedEmployee.id)}>
+              delete
+            </button>
+          </h2>
           <div>
             <span>
               <b>employeeID: </b>
@@ -203,7 +216,7 @@ const App = () => {
       <ul>
         {employees.map((employee) => (
           <li key={employee.id}>
-            <button className="" onClick={() => getDetails(employee.id)}>
+            <button onClick={() => getDetails(employee.id)}>
               {employee.name}
             </button>
           </li>
