@@ -53,11 +53,17 @@ button:focus-visible {
 .formDiv {
   margin: 8%;
 }
-ul li {
-  margin: 8px;
-  list-style-type: none;
+ul {
+  padding: 0px;
+  li {
+    margin: 8px;
+    list-style-type: none;
+  }
 }
-
+.inblock {
+  display: inline-block;
+  margin: 10px;
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

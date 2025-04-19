@@ -128,12 +128,12 @@ const App = () => {
           <h1>
             <b>Selected Employee:</b>
           </h1>
-          <h2>
-            {selectedEmployee.name}
+          <span>
+            <h2 className="inblock">{selectedEmployee.name}</h2>
             <button onClick={() => deleteEmployee(selectedEmployee.id)}>
               delete
             </button>
-          </h2>
+          </span>
           <div>
             <span>
               <b>employeeID: </b>
