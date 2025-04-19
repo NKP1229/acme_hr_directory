@@ -70,11 +70,16 @@ app.delete("/api/employees/:id", async (req, res, next) => {
 });
 app.put("/api/employees/:id", async (req, res, next) => {
   try {
-    res
-      .status(200)
-      .send(
-        "Returns an updated employee. The payload is the employee to update."
-      );
+    const { id } = req.params;
+    const { department_id } = req.body;
+    const SQL = `
+        UPDATE employees
+        SET department_id = $1, updated_at = NOW()
+        where id = $2
+        RETURNING *
+    `;
+    const response = await client.query(SQL, [department_id, id]);
+    res.status(200).json(response.rows[0]);
   } catch (error) {
     next(error);
   }

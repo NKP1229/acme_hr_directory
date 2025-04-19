@@ -29,10 +29,11 @@ const App = () => {
     event.preventDefault();
     try {
       const id = selectedEmployee.id;
-      // const response = await axios.put(`/api/employees/${id}`, {
-      //   department_id: department,
-      // });
-      console.log(department);
+      const data = await axios.get("/api/departments");
+      const search = data.data.find((dept) => dept.name === department);
+      const response = await axios.put(`/api/employees/${id}`, {
+        department_id: search.id,
+      });
       setIsUpdating(false);
       getDetails(id);
     } catch (error) {
