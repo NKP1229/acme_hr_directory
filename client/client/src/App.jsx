@@ -10,12 +10,12 @@ const App = () => {
   const [department, setDepartment] = useState("");
 
   useEffect(() => {
-    const fetchDepartments = async () => {
+    const fetchEmployees = async () => {
       const response = await axios.get("/api/employees");
       setEmployees(response.data);
       setIsLoading(false);
     };
-    fetchDepartments();
+    fetchEmployees();
   }, []);
   async function getDetails(id) {
     try {
@@ -39,6 +39,14 @@ const App = () => {
     } catch (error) {
       console.error(error);
       setIsUpdating(false);
+    }
+  }
+  async function fetchDepartment() {
+    try {
+      const data = await axios.get("/api/departments");
+      return data.data;
+    } catch (error) {
+      console.error(error);
     }
   }
   if (isLoading) {
@@ -72,6 +80,14 @@ const App = () => {
       </>
     );
   } else if (selectedEmployee) {
+    const logDepartments = async () => {
+      const list = await fetchDepartment();
+      const search = list.find(
+        (dept) => dept.id === selectedEmployee.department_id
+      );
+      setDepartment(search.name);
+    };
+    logDepartments();
     return (
       <>
         <button
@@ -86,14 +102,30 @@ const App = () => {
             <b>Selected Employee:</b>
           </h1>
           <h2>{selectedEmployee.name}</h2>
-          <h3>employeeID: </h3>
-          <h4>{selectedEmployee.id}</h4>
-          <h3>Department: </h3>
-          <h4>{selectedEmployee.department_id}</h4>
-          <h3>Date Joined: </h3>
-          <h4>{selectedEmployee.created_at}</h4>
-          <h3>Last Update: </h3>
-          <h4>{selectedEmployee.updated_at}</h4>
+          <div>
+            <span>
+              <b>employeeID: </b>
+              {selectedEmployee.id}
+            </span>
+          </div>
+          <div>
+            <span>
+              <b>Department: </b>
+              {department}
+            </span>
+          </div>
+          <div>
+            <span>
+              <b>Date Joined: </b>
+              {selectedEmployee.created_at}
+            </span>
+          </div>
+          <div>
+            <span>
+              <b>Last Update: </b>
+              {selectedEmployee.updated_at}
+            </span>
+          </div>
           <button
             onClick={() => {
               setIsUpdating(true);
