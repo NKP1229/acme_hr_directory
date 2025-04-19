@@ -117,14 +117,14 @@ const App = () => {
     logDepartments();
     return (
       <>
-        <button
-          onClick={() => {
-            setSelectedEmployee(null);
-          }}
-        >
-          back
-        </button>
         <main>
+          <button
+            onClick={() => {
+              setSelectedEmployee(null);
+            }}
+          >
+            back
+          </button>
           <h1>
             <b>Selected Employee:</b>
           </h1>
@@ -135,25 +135,25 @@ const App = () => {
             </button>
           </span>
           <div>
-            <span>
+            <span className="bg">
               <b>employeeID: </b>
               {selectedEmployee.id}
             </span>
           </div>
           <div>
-            <span>
+            <span className="bg">
               <b>Department: </b>
               {department}
             </span>
           </div>
           <div>
-            <span>
+            <span className="bg">
               <b>Date Joined: </b>
               {selectedEmployee.created_at}
             </span>
           </div>
           <div>
-            <span>
+            <span className="bg">
               <b>Last Update: </b>
               {selectedEmployee.updated_at}
             </span>
