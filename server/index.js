@@ -41,18 +41,19 @@ app.get("/api/departments", async (req, res, next) => {
   try {
     const SQL = `SELECT * FROM departments`;
     const response = await client.query(SQL);
-    res.status(200).json(response.rows); // Ensure this sends JSON
+    res.status(200).json(response.rows);
   } catch (error) {
-    next(error); // Handle errors
+    next(error);
   }
 });
 app.post("/api/employees", async (req, res, next) => {
   try {
-    res
-      .status(200)
-      .send(
-        "Returns a created employee. The payload is the employee to create."
-      );
+    const { name, department_id } = req.body;
+    const SQL = `
+        INSERT INTO employees(name,department_id) VALUES($1, $2) RETURNING *
+    `;
+    response = await client.query(SQL, [name, department_id]);
+    res.status(201).json(response.rows);
   } catch (error) {
     next(error);
   }

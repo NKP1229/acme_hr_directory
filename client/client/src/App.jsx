@@ -7,6 +7,9 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [employeeName, setEmployeeName] = useState("");
+  const [employeeDepartment, setEmployeeDepartment] = useState("");
   const [department, setDepartment] = useState("");
 
   useEffect(() => {
@@ -16,7 +19,7 @@ const App = () => {
       setIsLoading(false);
     };
     fetchEmployees();
-  }, []);
+  }, [isAdding]);
   async function getDetails(id) {
     try {
       const response = await axios.get(`/api/employees/${id}`);
@@ -39,6 +42,22 @@ const App = () => {
     } catch (error) {
       console.error(error);
       setIsUpdating(false);
+    }
+  }
+  async function addEmployee(event) {
+    event.preventDefault();
+    try {
+      console.log("new employee: ", employeeName, employeeDepartment);
+      const data = await axios.get("/api/departments");
+      const search = data.data.find((dept) => dept.name === employeeDepartment);
+      const response = await axios.post(`/api/employees`, {
+        name: employeeName,
+        department_id: search.id,
+      });
+      setIsAdding(false);
+    } catch (error) {
+      console.error(error);
+      setIsAdding(false);
     }
   }
   async function fetchDepartment() {
@@ -137,6 +156,44 @@ const App = () => {
       </>
     );
   }
+  if (isAdding) {
+    return (
+      <main>
+        <button className="details right" onClick={() => setIsAdding(false)}>
+          back
+        </button>
+        <h1>
+          <b>Add New Employee:</b>
+        </h1>
+        <form onSubmit={addEmployee}>
+          <div className="formDiv">
+            <label>Full Name: </label>
+            <input
+              type="text"
+              name="employeeName"
+              value={employeeName}
+              onChange={(e) => setEmployeeName(e.target.value)}
+              placeholder="Please Enter Full Name"
+            />
+          </div>
+          <div className="formDiv">
+            <label>Department: </label>
+            <select
+              value={employeeDepartment}
+              onChange={(e) => setEmployeeDepartment(e.target.value)}
+            >
+              <option value="Accounting">Accounting</option>
+              <option value="Customer Service">Customer Service</option>
+              <option value="Finance">Finance</option>
+              <option value="Info Tech">Info Tech</option>
+              <option value="Marketing">Marketing</option>
+            </select>
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+      </main>
+    );
+  }
   return (
     <main>
       <h1>
@@ -152,6 +209,7 @@ const App = () => {
           </li>
         ))}
       </ul>
+      <button onClick={() => setIsAdding(true)}>Add Employee</button>
     </main>
   );
 };
