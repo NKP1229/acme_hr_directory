@@ -11,6 +11,7 @@ const App = () => {
   const [employeeName, setEmployeeName] = useState("");
   const [employeeDepartment, setEmployeeDepartment] = useState("");
   const [department, setDepartment] = useState("");
+  const [departments, setDepartments] = useState({});
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -19,6 +20,15 @@ const App = () => {
       setIsLoading(false);
     };
     fetchEmployees();
+    const fetchDepartments = async () => {
+      const departmentMap = {};
+      const list = await fetchDepartment();
+      list.forEach((dept) => {
+        departmentMap[dept.id] = dept.name;
+      });
+      setDepartments(departmentMap);
+    };
+    fetchDepartments();
   }, [isAdding, selectedEmployee]);
   async function getDetails(id) {
     try {
@@ -76,6 +86,9 @@ const App = () => {
       console.error(error);
     }
   }
+  const getDepartmentName = (id) => {
+    return departments[id] || "Department not found";
+  };
   if (isLoading) {
     return <section className="loading">Loading</section>;
   }
@@ -216,8 +229,13 @@ const App = () => {
       <ul>
         {employees.map((employee) => (
           <li key={employee.id}>
-            <button onClick={() => getDetails(employee.id)}>
-              {employee.name}
+            <button
+              onClick={() => getDetails(employee.id)}
+              className="employeeInfo"
+            >
+              <img src="https://media.istockphoto.com/id/1316420668/vector/user-icon-human-person-symbol-social-profile-icon-avatar-login-sign-web-user-symbol.jpg?s=612x612&w=0&k=20&c=AhqW2ssX8EeI2IYFm6-ASQ7rfeBWfrFFV4E87SaFhJE="></img>
+              <div>{employee.name}</div>
+              <div>{getDepartmentName(employee.department_id)}</div>
             </button>
           </li>
         ))}

@@ -26,6 +26,7 @@ body {
   display: flex;
   place-items: center;
   min-height: 100vh;
+  min-width: 100%;
 }
 main {
   background-color: rgba(247, 181, 115, 0.8);
@@ -33,6 +34,7 @@ main {
   padding: 15px;
   height: 90%;
   width: 100%;
+  max-width: 825px;
   text-align: center;
   border: 2px solid rgb(255, 255, 255);
   border-radius: 12%;
@@ -57,6 +59,9 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  img {
+    height: 100px;
+  }
 }
 button:hover {
   border-color: #646cff;
@@ -74,6 +79,8 @@ ul {
   li {
     margin: 8px;
     list-style-type: none;
+    width: 250px;
+    display: inline-block;
   }
 }
 .inblock {
@@ -84,6 +91,9 @@ ul {
   background-color: #21354715;
   padding: 2px;
   margin: 3px;
+}
+.employeeInfo {
+  width: 200px;
 }
 
 @media (prefers-color-scheme: light) {
